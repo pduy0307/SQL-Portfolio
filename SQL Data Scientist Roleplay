@@ -1,0 +1,405 @@
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+Code:
+select count(*)
+from table
+	
+i. Attribute table = 10000
+ii. Business table = 10000
+iii. Category table = 10000
+iv. Checkin table = 10000
+v. elite_years table = 10000
+vi. friend table = 10000
+vii. hours table = 10000
+viii. photo table = 10000
+ix. review table = 10000
+x. tip table = 10000
+xi. user table = 10000
+	
+
+
+2. Find the total distinct records by either the foreign key or primary key for each table. If two foreign keys are listed in the table, please specify which foreign key.
+Code:
+select count(distinct key) 
+from table 
+
+i. Business = 10000 (id)
+ii. Hours = 1562 (business_id)
+iii. Category = 2643 (business_id)
+iv. Attribute = 1115 (business_id)
+v. Review = 10000 (primary key), 9581(user_id), 8090 (business_id),
+vi. Checkin = 493 (business_id) 
+vii. Photo = 10000 (id), 6493 (business_id)
+viii. Tip = 537 (user_id), 3979 (business_id)
+ix. User = 10000(id), 
+x. Friend = 11 (user_id)
+xi. Elite_years = 2780 (user_id)
+
+Note: Primary Keys are denoted in the ER-Diagram with a yellow key icon.	
+
+
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+	Answer: No
+	
+	
+	SQL code used to arrive at answer:
+	select count(*)
+	from user
+	where id IS NULL 
+	or name IS NULL
+	or review_count IS NULL
+	or yelping_since IS NULL
+	or useful IS NULL
+	or funny IS NULL
+	or cool IS NULL
+	or fans IS NULL
+	or average_stars IS NULL
+	or compliment_hot IS NULL
+	or compliment_more IS NULL
+	or compliment_profile IS NULL
+	or compliment_cute IS NULL
+	or compliment_list IS NULL
+	or compliment_note IS NULL
+	or compliment_plain IS NULL
+	or compliment_cool IS NULL
+	or compliment_funny IS NULL
+	or compliment_writer IS NULL
+	or compliment_photos IS NULL
+	
+
+	
+4. For each table and column listed below, display the smallest (minimum), largest (maximum), and average (mean) value for the following fields:
+Code:
+select min(key), max(key), avg(key)
+from table
+
+	i. Table: Review, Column: Stars
+	
+		min: 1		max: 5		avg: 3.7082	
+		
+	
+	ii. Table: Business, Column: Stars
+	
+		min: 1.0	max: 5.0	avg: 3.6549
+		
+	
+	iii. Table: Tip, Column: Likes
+	
+		min: 0 		max: 2		avg: 0.0144
+		
+	
+	iv. Table: Checkin, Column: Count
+	
+		min: 1		max: 53		avg: 1.9414
+		
+	
+	v. Table: User, Column: Review_count
+	
+		min: 0		max: 2000	avg: 24.2995
+		
+
+
+5. List the cities with the most reviews in descending order:
+
+	SQL code used to arrive at answer:
+	
+	select city, review_count
+	from business
+	group by city
+	order by review_count desc
+
+	Copy and Paste the Result Below:
++-----------------+-------+
+| city            |   sum |
++-----------------+-------+
+| Las Vegas       | 82854 |
+| Phoenix         | 34503 |
+| Toronto         | 24113 |
+| Scottsdale      | 20614 |
+| Charlotte       | 12523 |
+| Henderson       | 10871 |
+| Tempe           | 10504 |
+| Pittsburgh      |  9798 |
+| MontrÃ©al        |  9448 |
+| Chandler        |  8112 |
+| Mesa            |  6875 |
+| Gilbert         |  6380 |
+| Cleveland       |  5593 |
+| Madison         |  5265 |
+| Glendale        |  4406 |
+| Mississauga     |  3814 |
+| Edinburgh       |  2792 |
+| Peoria          |  2624 |
+| North Las Vegas |  2438 |
+| Markham         |  2352 |
+| Champaign       |  2029 |
+| Stuttgart       |  1849 |
+| Surprise        |  1520 |
+| Lakewood        |  1465 |
+| Goodyear        |  1155 |
++-----------------+-------+
+
+	
+6. Find the distribution of star ratings to the business in the following cities:
+
+i. Avon
+
+SQL code used to arrive at answer:
+
+select stars, sum(review_count) as sum
+from business
+where city = "Avon"
+group by stars
+
+Copy and Paste the Resulting Table Below (2 columns Ã¢â‚¬â€œ star rating and count):
++-------+-----+
+| stars | sum |
++-------+-----+
+|   1.5 |  10 |
+|   2.5 |   6 |
+|   3.5 |  88 |
+|   4.0 |  21 |
+|   4.5 |  31 |
+|   5.0 |   3 |
++-------+-----+
+
+ii. Beachwood
+
+SQL code used to arrive at answer:
+select stars, sum(review_count) as sum
+from business
+where city = "Beachwood"
+group by stars
+
+Copy and Paste the Resulting Table Below (2 columns Ã¢â‚¬â€œ star rating and count):
+		
++-------+-----+
+| stars | sum |
++-------+-----+
+|   2.0 |   8 |
+|   2.5 |   3 |
+|   3.0 |  11 |
+|   3.5 |   6 |
+|   4.0 |  69 |
+|   4.5 |  17 |
+|   5.0 |  23 |
++-------+-----+
+
+7. Find the top 3 users based on their total number of reviews:
+		
+	SQL code used to arrive at answer:
+select name, review_count
+from user
+group by name
+order by review_count desc
+limit 3
+		
+	Copy and Paste the Result Below:
++--------+--------------+
+| name   | review_count |
++--------+--------------+
+| Gerald |         2000 |
+| .Hon   |         1246 |
+| eric   |         1116 |
++--------+--------------+		
+
+
+8. Does posing more reviews correlate with more fans?
+
+	Please explain your findings and interpretation of the results:
+Not entiryly correlated. Amy, who has the most fans, only has 609 reviews. Yuri has only 76 fans, but has the
+third most reviews.
+Code:
+select name, fans, review_count
+from user
+order by  review_count desc	
+
+	
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	Answer: Love is contained in 1780 reviews whereas Hate is contained in only 232 reviews.
+
+	
+	SQL code used to arrive at answer:
+	select count(text)
+	from review
+	where text like '%love%'
+	Union
+	select count(text)
+	from review
+	where text like '%hate%'
+	
+	
+10. Find the top 10 users with the most fans:
+
+	SQL code used to arrive at answer:
+	select id, name, fans
+	from user
+	group by id
+	order by fans desc
+	limit 10
+	
+	Copy and Paste the Result Below:
+
++------------------------+-----------+------+
+| id                     | name      | fans |
++------------------------+-----------+------+
+| -9I98YbNQnLdAmcYfb324Q | Amy       |  503 |
+| -8EnCioUmDygAbsYZmTeRQ | Mimi      |  497 |
+| --2vR0DIsmQ6WfcSzKWigw | Harald    |  311 |
+| -G7Zkl1wIWBBmD0KRy_sCw | Gerald    |  253 |
+| -0IiMAZI2SsQ7VmyzJjokQ | Christine |  173 |
+| -g3XIcCb2b-BD0QBCcq2Sw | Lisa      |  159 |
+| -9bbDysuiWeo2VShFJJtcw | Cat       |  133 |
+| -FZBTkAZEXoP7CYvRV2ZwQ | William   |  126 |
+| -9da1xk7zgnnfO1uTVYGkA | Fran      |  124 |
+| -lh59ko3dxChBSZ9U7LfUw | Lissa     |  120 |
++------------------------+-----------+------+
+		
+
+Part 2: Inferences and Analysis
+
+1. Pick one city and category of your choice and group the businesses in that city or category by their overall star rating. Compare the businesses with 2-3 stars to the businesses with 4-5 stars and answer the following questions. Include your code.
+I choose Las Vegas and Shopping for my analysis.
+	
+i. Do the two groups you chose to analyze have a different distribution of hours?
+Yes, a 2-3 star usually closed at 22:00 and a 4-5 star usually closed at 16:30.
++-----------+----------+-------+-----------------------+
+| city      | category | stars | hours                 |
++-----------+----------+-------+-----------------------+
+| Las Vegas | Shopping |   5.0 | Friday|8:00-17:00     |
+| Las Vegas | Shopping |   5.0 | Tuesday|8:00-17:00    |
+| Las Vegas | Shopping |   5.0 | Thursday|8:00-17:00   |
+| Las Vegas | Shopping |   5.0 | Wednesday|8:00-17:00  |
+| Las Vegas | Shopping |   5.0 | Monday|8:00-17:00     |
+| Las Vegas | Shopping |   4.5 | Monday|8:00-16:30     |
+| Las Vegas | Shopping |   4.5 | Tuesday|8:00-16:30    |
+| Las Vegas | Shopping |   4.5 | Friday|8:00-16:30     |
+| Las Vegas | Shopping |   4.5 | Wednesday|8:00-16:30  |
+| Las Vegas | Shopping |   4.5 | Thursday|8:00-16:30   |
+| Las Vegas | Shopping |   4.5 | Sunday|8:00-16:30     |
+| Las Vegas | Shopping |   4.5 | Saturday|8:00-16:30   |
+| Las Vegas | Shopping |   3.5 | Monday|10:00-16:00    |
+| Las Vegas | Shopping |   3.5 | Tuesday|10:00-19:00   |
+| Las Vegas | Shopping |   3.5 | Friday|10:00-16:00    |
+| Las Vegas | Shopping |   3.5 | Wednesday|10:00-16:00 |
+| Las Vegas | Shopping |   3.5 | Thursday|10:00-19:00  |
+| Las Vegas | Shopping |   3.5 | Saturday|10:00-16:00  |
+| Las Vegas | Shopping |   2.5 | Monday|8:00-22:00     |
+| Las Vegas | Shopping |   2.5 | Tuesday|8:00-22:00    |
+| Las Vegas | Shopping |   2.5 | Friday|8:00-22:00     |
+| Las Vegas | Shopping |   2.5 | Wednesday|8:00-22:00  |
+| Las Vegas | Shopping |   2.5 | Thursday|8:00-22:00   |
+| Las Vegas | Shopping |   2.5 | Sunday|8:00-22:00     |
+| Las Vegas | Shopping |   2.5 | Saturday|8:00-22:00   |
++-----------+----------+-------+-----------------------+
+
+ii. Do the two groups you chose to analyze have a different number of reviews?
+Yes, 2-3 star have only 6 reviews but 4-5 star may only have 4 reviews
+ +-----------+--------------+----------------------+--------------------------------+-----------+----------+
+| rating    | review_count | hours                | name                           | city      | category |
++-----------+--------------+----------------------+--------------------------------+-----------+----------+
+| 4-5 Stars |            4 | Wednesday|8:00-17:00 | Desert Medical Equipment       | Las Vegas | Shopping |
+| 4-5 Stars |            4 | Tuesday|8:00-17:00   | Desert Medical Equipment       | Las Vegas | Shopping |
+| 4-5 Stars |            4 | Thursday|8:00-17:00  | Desert Medical Equipment       | Las Vegas | Shopping |
+| 4-5 Stars |            4 | Monday|8:00-17:00    | Desert Medical Equipment       | Las Vegas | Shopping |
+| 4-5 Stars |            4 | Friday|8:00-17:00    | Desert Medical Equipment       | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Wednesday|8:00-16:30 | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Tuesday|8:00-16:30   | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Thursday|8:00-16:30  | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Sunday|8:00-16:30    | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Saturday|8:00-16:30  | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Monday|8:00-16:30    | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 4-5 Stars |           32 | Friday|8:00-16:30    | Red Rock Canyon Visitor Center | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Wednesday|8:00-22:00 | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Tuesday|8:00-22:00   | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Thursday|8:00-22:00  | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Sunday|8:00-22:00    | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Saturday|8:00-22:00  | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Monday|8:00-22:00    | Walgreens                      | Las Vegas | Shopping |
+| 2-3 Stars |            6 | Friday|8:00-22:00    | Walgreens                      | Las Vegas | Shopping |
++-----------+--------------+----------------------+--------------------------------+-----------+----------+        
+         
+iii. Are you able to infer anything from the location data provided between these two groups? Explain.
+No, the location data does not provide any conclusion because each distribution rating provide different postal code and neighborhood
+SQL code used for analysis:
+SELECT
+       CASE
+       WHEN stars>=4 THEN '4-5 Stars'
+       WHEN (stars>=2 AND stars<=3) THEN '2-3 Stars'
+       END as rating,
+
+       review_count,
+       hours.hours,
+       name,
+       city, category,
+       state,
+       postal_code
+
+
+FROM business INNER JOIN category
+     ON business.id=category.business_id
+
+     INNER JOIN hours
+     ON business.id=hours.business_id
+
+WHERE city='Las Vegas'
+      AND category = 'Shopping'
+      AND (stars>=4 OR (stars <3 and stars>2))
+
+ORDER BY stars DESC, hours DESC
+		
+		
+2. Group business based on the ones that are open and the ones that are closed. What differences can you find between the ones that are still open and the ones that are closed? List at least two differences and the SQL code you used to arrive at your answer.
+		
+i. Difference 1: The average stars between ones that are open and closed is 3.67 and 3.52 respectively. 
+         
+         
+ii. Difference 2: The average reviews between ones that are open and closed is 31.75 and 23.19 respectively.
+         
++--------------------+-------------------+---------+---------------+
+| count(distinct id) | AVG(review_count) | is_open |    AVG(stars) |
++--------------------+-------------------+---------+---------------+
+|               1520 |     23.1980263158 |       0 | 3.52039473684 |
+|               8480 |     31.7570754717 |       1 | 3.67900943396 |
++--------------------+-------------------+---------+---------------+
+         
+         
+SQL code used for analysis:
+select  count(distinct id),
+        AVG(review_count), 
+        is_open, 
+        AVG(stars)
+from business 
+group by is_open
+	
+	
+3. For this last part of your analysis, you are going to choose the type of analysis you want to conduct on the Yelp dataset and are going to prepare the data for analysis.
+
+Ideas for analysis include: Parsing out keywords and business attributes for sentiment analysis, clustering businesses to find commonalities or anomalies between them, predicting the overall star rating for a business, predicting the number of fans a user will have, and so on. These are just a few examples to get you started, so feel free to be creative and come up with your own problem you want to solve. Provide answers, in-line, to all of the following:
+	
+i. Indicate the type of analysis you chose to do:
+The analysis is to find out what are the most successful businesses based on the business category.
+ii. Write 1-2 brief paragraphs on the type of data you will need for your analysis and why you chose that data:
+n order to do this analysis, we will need data such as id, stars, and review count from the business table and category from category table. We will need to count the numbers of companies within each category, the average stars given by the consumers to see how they perform, and the total reviews given to see if the data is relevant and ensure itâ€™s not biased.
+
+Lastly, weâ€™re only going to look at categories with at least 10 companies and an average of 3.5+ stars to reduce any irrelevant data.                           
+                  
+iii. Output of your finished dataset:
+n order to do this analysis, we will need data such as id, stars, and review count from the business table and category from category table. We will need to count the numbers of companies within each category, the average stars given by the consumers to see how they perform, and the total reviews given to see if the data is relevant and ensure itâ€™s not biased.
+
+Lastly, weâ€™re only going to look at categories with at least 10 companies and an average of 3.5+ stars to reduce any irrelevant data.        
+         
+iv. Provide the SQL code you used to create your final dataset:
+SELECT  category, 
+        count(distinct id) AS num_companies, 
+        round(avg(stars),2) AS avg_stars,
+        sum(review_count) total_reviews
+FROM business
+JOIN category ON business.id = category.business_id
+GROUP BY category
+HAVING avg_stars >= 3.5 AND num_companies >= 10
+ORDER BY avg_stars DESC
